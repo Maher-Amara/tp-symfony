@@ -10,7 +10,9 @@ use App\Entity\Job;
 
 class JobController extends AbstractController
 {
-    #[Route('/job', name: 'app_job')]
+  /**
+     * @Route("/job", name="job_add")
+     */
     public function index(): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
