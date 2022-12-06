@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Job;
+use App\Entity\Candidature;
 
 
 class JobController extends AbstractController
@@ -22,8 +23,26 @@ class JobController extends AbstractController
         $job->setDescription('Genie logiciel');
         $job->setExpiresAt(new \DateTimeImmutable());
         $job->setEmail('haykel@gmail.com');
+        
+        // Ajout des condidat
+        $candidature1 = new Candidature();
+        $candidature1->setJob($job);
+        $candidature1->setCandidat("Rhaiem");
+        $candidature1->setContenu("Formation J2EE");
+        $candidature1->setDate(new \DateTime());
+
+        $candidature2 = new Candidature();
+        $candidature2->setJob($job);
+        $candidature2->setCandidat("Salime");
+        $candidature2->setContenu("Formation Symfony");
+        $candidature2->setDate(new \DateTime());
+
         $entityManager->persist($job);
+        $entityManager->persist($candidature1);
+        $entityManager->persist($candidature2);
+        // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
+        
         return $this->render('job/index.html.twig', [
             'controller_name' => 'JobController',
             'id' => $job->getId(),
