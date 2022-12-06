@@ -57,14 +57,16 @@ class JobController extends AbstractController
         $job = $this->getDoctrine()
             ->getRepository(Job::class)
             ->find($id);
+        $em=$this->getDoctrine()->getManager();
+        $listCandidatures=$em->getRepository(Candidature::class)->findBy(['Job'=>$job]);
         if (!$job) {
             throw $this->createNotFoundException(
                 'No job found for id '.$id
             );
         }
         return $this->render('job/show.html.twig', [
-            'job' =>$job
+            'listCandidatures' => $listCandidatures,
+            'job' => $job
         ]);
     }
-
 }
