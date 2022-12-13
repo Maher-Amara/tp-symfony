@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\Request;
+use App\Form\JobType;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -78,6 +79,51 @@ class JobController extends AbstractController
     public function ajouter(Request $request)
     {
         $candidat = new Candidature();
+        
+        $fb = $this->createFormBuilder($candidat)
+        ->add('candidat', TextType::class)
+        ->add('contenu', TextType::class, array("label" => "Contenu"))
+        ->add('date', DateType::class)
+        ->add('job', EntityType::class, array(
+            'class' => Job::class,
+            'choice_label' => 'type'
+        ))
+        ->add('Valider', SubmitType::class);
+        
+        // generer le formulaire a partir du FormBuilder
+        $form = $fb->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($candidat);
+            $em->flush();
+            
+            return $this->redirectToRoute('ajouter');
+        }
+
+        // Utiliser le methode createView() pour que l'objet soit exploitable par la vue
+        $data = array(
+            'form' => $form->createView()  
+        );
+
+        return $this->render('job/ajouter.html.twig', $data);
+    }
+
+    /**
+    * @Route("/job/ajouter2", name="ajout_job")
+    */
+    public function ajouter2(Request $request)
+    {
+        $job = new Job();
+        $form = $this->createForm("App\Form\JobType", $job);
+        $form-> handleRequest($request);
+        if ($form->isSubmited()){
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($job);
+            $em->flush();
+            return $this->redirectToRoute('ajout_job');
+        }
         
         $fb = $this->createFormBuilder($candidat)
         ->add('candidat', TextType::class)
