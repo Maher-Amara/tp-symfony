@@ -16,11 +16,25 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\Request;
 
-
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class JobController extends AbstractController
 {
-  /**
+    /**
+     * @Route("/", name="home")
+     */
+    public function home(): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository(Candidature::class);
+        $lesCandidats = $repo->findAll();
+
+        $data = array(
+            'lesCandidats'=>$lesCandidats,
+        );
+        return $this->render('job/home.html', $data);
+    }
+    /**
      * @Route("/job", name="job_add")
      */
     public function index(): Response
