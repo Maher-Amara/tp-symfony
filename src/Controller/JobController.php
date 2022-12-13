@@ -32,7 +32,7 @@ class JobController extends AbstractController
         $data = array(
             'lesCandidats'=>$lesCandidats,
         );
-        return $this->render('job/home.html', $data);
+        return $this->render('job/home.html.twig', $data);
     }
     /**
      * @Route("/job", name="job_add")
@@ -128,6 +128,46 @@ class JobController extends AbstractController
             'listCandidatures' => $listCandidatures,
             'job' => $job
         ]);
+    }
+
+    /**
+    * @Route("/editU/{id}", name="edit_user")
+    * Method({"GET","POST"})
+    */
+    public function edit(Request $request, $id){ 
+        $candidat = new Candidature();
+        $candidat = $this->getDoctrine()
+        ->getRepository(Candidature::class)
+        ->find($id);
+        if (!$candidat) {
+            throw $this->createNotFoundException(
+                'No candidat found for id '.$id
+            );
+        }
+        $fb = $this->createFormBuilder($candidat)
+        ->add('candidat', TextType::class)
+        ->add('contenu', TextType::class, array("label" => "Contenu"))
+        ->add('date', DateType::class)
+        ->add('job', EntityType::class, [
+        'class' => Job::class,
+        'choice_label' => 'type',
+        ])
+        ->add('Valider', SubmitType::class);
+
+        // générer le formulaire à partir du FormBuilder
+        $form = $fb->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
+            return $this->redirectToRoute('home');
+        }
+
+        $data = array(
+            'form' => $form->createView()
+        );
+
+        return $this->render('job/ajouter.html.twig', $data);
     }
 
     /**
