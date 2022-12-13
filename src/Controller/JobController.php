@@ -84,7 +84,7 @@ class JobController extends AbstractController
             $em->persist($candidat);
             $em->flush();
             
-            return $this->redirectToRoute('Accueil');
+            return $this->redirectToRoute('ajouter');
         }
 
         // Utiliser le methode createView() pour que l'objet soit exploitable par la vue
