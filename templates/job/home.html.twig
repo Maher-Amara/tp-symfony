@@ -27,7 +27,7 @@
                 <td>
                     <a href="#" class="btn btn-primary">Voir</a>
                     <a href="#" class="btn btn-info">Modifier</a>
-                    <a href="#" class="btn btn-danger">Supprimer</a>
+                    <a href="{{ path('cand_delete', {'id':candidat.id }) }}" class="btn btn-danger" onclick="return confirm('Are you sure to delete!{{ candidat.candidat}}')">Supprimer</a>
                 </td>
             </tr>
             {% else %}

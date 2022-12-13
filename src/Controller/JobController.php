@@ -129,4 +129,26 @@ class JobController extends AbstractController
             'job' => $job
         ]);
     }
+
+    /**
+    * @Route("/supp/{id}", name="cand_delete")
+    */
+    public function delete(Request $request, $id): Response {
+        $c = $this->getDoctrine()
+            ->getRepository(Candidature::class)
+            ->find($id);
+        
+        if (!$c) {
+            throw $this->createNotFoundException(
+                'No candidature found for id '.$id
+            );
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($c);
+        
+        $entityManager->flush();
+
+        return $this->redirectToRoute('home');
+    }
 }
